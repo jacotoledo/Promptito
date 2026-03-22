@@ -11,7 +11,7 @@
 
 <p align="center">
   Made with ❤️ by <a href="https://jtg365.com">Jaco Toledo</a><br>
-  <a href="https://github.com/jacotoledo">GitHub</a> · <a href="https://jtg365.com">jtg365.com</a>
+  <a href="https://github.com/jacotoledo">GitHub</a> · <a href="https://jacotoledo.github.io/Promptito">Website</a> · <a href="https://jtg365.com">jtg365.com</a>
 </p>
 
 ---

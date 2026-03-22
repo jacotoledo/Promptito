@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Promptito - PROMPT + RAPIDITO. The fastest way to manage AI prompts. Zero dependencies, self-hosted, standards-compliant.">
+    <meta name="theme-color" content="#0f172a">
+    <title>Promptito - The Fastest Way to Manage AI Prompts</title>
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --border: #475569;
+            --success: #4ade80;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            padding: 60px 0 40px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .logo span:first-child {
+            color: var(--text-primary);
+        }
+
+        .logo span:last-child {
+            color: var(--accent);
+        }
+
+        .tagline {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+
+        .badges {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: var(--bg-secondary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            border: 1px solid var(--border);
+        }
+
+        .badge a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .badge a:hover {
+            text-decoration: underline;
+        }
+
+        /* Screenshot */
+        .screenshot {
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .screenshot img {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border: 1px solid var(--border);
+        }
+
+        /* CTA */
+        .cta {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card);
+        }
+
+        /* Sections */
+        section {
+            padding: 60px 0;
+            border-top: 1px solid var(--border);
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        /* Features */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .feature {
+            background: var(--bg-secondary);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .feature h3 {
+            font-size: 1.125rem;
+            margin-bottom: 10px;
+            color: var(--accent);
+        }
+
+        .feature p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Quick Start */
+        .quick-start {
+            background: var(--bg-secondary);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .quick-start h3 {
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+            color: var(--accent);
+        }
+
+        .quick-start ol {
+            padding-left: 25px;
+        }
+
+        .quick-start li {
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+        }
+
+        .quick-start code {
+            background: var(--bg-primary);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9rem;
+        }
+
+        /* Docs */
+        .docs-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .doc-link {
+            background: var(--bg-secondary);
+            padding: 15px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .doc-link:hover {
+            background: var(--bg-card);
+            border-color: var(--accent);
+        }
+
+        .doc-link small {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+
+        /* API */
+        .api-endpoints {
+            background: var(--bg-secondary);
+            padding: 30px;
+            border-radius: 12px;
+            font-family: 'Monaco', 'Consolas', monospace;
+        }
+
+        .api-endpoint {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .api-endpoint:last-child {
+            border-bottom: none;
+        }
+
+        .method {
+            background: var(--success);
+            color: var(--bg-primary);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-right: 15px;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .endpoint-path {
+            color: var(--text-primary);
+        }
+
+        .endpoint-desc {
+            margin-left: auto;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-brand {
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+        }
+
+        .footer-brand span {
+            color: var(--accent);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2.5rem;
+            }
+
+            .feature {
+                padding: 20px;
+            }
+
+            .api-endpoint {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .endpoint-desc {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <span>PROMPT</span><span>ITO</span>
+            </div>
+            <p class="tagline">PROMPT + RAPIDITO (Spanish for super fast)<br>The fastest way to manage AI prompts</p>
+            
+            <div class="badges">
+                <span class="badge">Zero Dependencies</span>
+                <span class="badge">Self-Hosted</span>
+                <span class="badge">MIT License</span>
+                <span class="badge"><a href="https://github.com/jacotoledo/Promptito">View on GitHub</a></span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="screenshot">
+            <img src="https://raw.githubusercontent.com/jacotoledo/Promptito/main/public/screenshots/Screenshot.png" alt="Promptito UI">
+        </div>
+
+        <div class="cta">
+            <div class="cta-buttons">
+                <a href="https://app.koyeb.com" class="btn btn-primary">Deploy Free on Koyeb</a>
+                <a href="https://github.com/jacotoledo/Promptito" class="btn btn-secondary">View on GitHub</a>
+            </div>
+        </div>
+
+        <section id="features">
+            <h2>Why Promptito?</h2>
+            <div class="features-grid">
+                <div class="feature">
+                    <h3>No More Chaos</h3>
+                    <p>Stop naming files "v2_FINAL_real.md". Simple folders, one search bar, done.</p>
+                </div>
+                <div class="feature">
+                    <h3>Zero Dependencies</h3>
+                    <p>It's a single Go binary. No Node.js, no Python, no database. Just run it.</p>
+                </div>
+                <div class="feature">
+                    <h3>Privacy First</h3>
+                    <p>No tracking, no analytics, no telemetry. Your prompts stay on your server.</p>
+                </div>
+                <div class="feature">
+                    <h3>Standards Compliant</h3>
+                    <p>Built on real AI metadata standards: IPTC, ISO/IEC 5259, NIST AI RMF, SFIA 9.</p>
+                </div>
+                <div class="feature">
+                    <h3>AI Agent Ready</h3>
+                    <p>REST API with clean endpoints. Your AI agents can fetch prompts programmatically.</p>
+                </div>
+                <div class="feature">
+                    <h3>Free Forever</h3>
+                    <p>Deploy on Koyeb's free tier. No credit card. No server costs.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="quick-start">
+            <h2>Quick Start</h2>
+            
+            <div class="quick-start">
+                <h3>Option 1: Free Website (Recommended)</h3>
+                <ol>
+                    <li>Fork this repository on GitHub</li>
+                    <li>Go to <a href="https://app.koyeb.com">app.koyeb.com</a> and sign up</li>
+                    <li>Click <strong>Create Service</strong> → <strong>Deploy from GitHub</strong></li>
+                    <li>Select your fork and click <strong>Deploy</strong></li>
+                    <li>Done! Your prompts are live at <code>https://your-app.koyeb.app</code></li>
+                </ol>
+            </div>
+
+            <div class="quick-start">
+                <h3>Option 2: Run Locally</h3>
+                <ol>
+                    <li>Download from <a href="https://github.com/jacotoledo/Promptito/releases">GitHub Releases</a></li>
+                    <li>Double-click <code>promptito.exe</code></li>
+                    <li>Open <a href="http://localhost">http://localhost</a></li>
+                </ol>
+            </div>
+
+            <div class="quick-start">
+                <h3>Option 3: Docker</h3>
+                <ol>
+                    <li>Run: <code>docker run -p 80:80 ghcr.io/jacotoledo/promptito:latest</code></li>
+                    <li>Open <a href="http://localhost">http://localhost</a></li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="api">
+            <h2>API Reference</h2>
+            <div class="api-endpoints">
+                <div class="api-endpoint">
+                    <span class="method">GET</span>
+                    <span class="endpoint-path">/api/skills</span>
+                    <span class="endpoint-desc">List all prompts</span>
+                </div>
+                <div class="api-endpoint">
+                    <span class="method">GET</span>
+                    <span class="endpoint-path">/api/skills/{name}</span>
+                    <span class="endpoint-desc">Get one prompt</span>
+                </div>
+                <div class="api-endpoint">
+                    <span class="method">GET</span>
+                    <span class="endpoint-path">/api/search?q=text</span>
+                    <span class="endpoint-desc">Search prompts</span>
+                </div>
+                <div class="api-endpoint">
+                    <span class="method">GET</span>
+                    <span class="endpoint-path">/api/tags</span>
+                    <span class="endpoint-desc">List all tags</span>
+                </div>
+                <div class="api-endpoint">
+                    <span class="method">GET</span>
+                    <span class="endpoint-path">/health</span>
+                    <span class="endpoint-desc">Health check</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="docs">
+            <h2>Documentation</h2>
+            <div class="docs-nav">
+                <a href="https://github.com/jacotoledo/Promptito/blob/main/README.md" class="doc-link">
+                    README
+                    <small>Overview and quick start</small>
+                </a>
+                <a href="https://github.com/jacotoledo/Promptito/blob/main/SKILL.md" class="doc-link">
+                    SKILL.md Format
+                    <small>Prompt schema specification</small>
+                </a>
+                <a href="https://github.com/jacotoledo/Promptito/blob/main/SECURITY.md" class="doc-link">
+                    Security Policy
+                    <small>Report vulnerabilities</small>
+                </a>
+                <a href="https://github.com/jacotoledo/Promptito/blob/main/CONTRIBUTING.md" class="doc-link">
+                    Contributing
+                    <small>How to contribute</small>
+                </a>
+                <a href="https://github.com/jacotoledo/Promptito/blob/main/LICENSE" class="doc-link">
+                    License
+                    <small>MIT - free to use</small>
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-brand">
+                <span>PROMPTITO</span> by <a href="https://jtg365.com">Jaco Toledo</a>
+            </div>
+            <p>
+                <a href="https://github.com/jacotoledo/Promptito">GitHub</a> · 
+                <a href="https://jtg365.com">jtg365.com</a> · 
+                <a href="https://github.com/jacotoledo/Promptito/issues">Issues</a>
+            </p>
+            <p style="margin-top: 20px; font-size: 0.875rem;">
+                Built with ❤️ and slightly too much coffee
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
