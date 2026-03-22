@@ -1,53 +1,65 @@
 # Promptito
 
 <p align="center">
+  <a href="https://github.com/jacotoledo/Promptito/stargazers">
+    <img src="https://img.shields.io/github/stars/jacotoledo/Promptito?style=social" alt="Stars">
+  </a>
+  <a href="https://github.com/jacotoledo/Promptito/network/members">
+    <img src="https://img.shields.io/github/forks/jacotoledo/Promptito?style=social" alt="Forks">
+  </a>
+  <img src="https://img.shields.io/github/license/jacotoledo/Promptito" alt="License">
+  <img src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-blue" alt="Platform">
+</p>
+
+<p align="center">
   <strong>PROMPT</strong> + <strong>RAPIDITO</strong> (Spanish for <em>super fast</em>)<br>
   <em>The fastest way to manage AI prompts</em>
 </p>
 
 <p align="center">
-  <img src="public/screenshots/Screenshot.png" alt="Promptito UI" width="800">
+  <a href="https://github.com/jacotoledo/Promptito">
+    <img src="https://raw.githubusercontent.com/jacotoledo/Promptito/main/public/screenshots/Screenshot.png" alt="Promptito UI" width="800">
+  </a>
 </p>
 
 <p align="center">
-  Made with ❤️ by <a href="https://jtg365.com">Jaco Toledo</a><br>
-  <a href="https://github.com/jacotoledo">GitHub</a> · <a href="https://jacotoledo.github.io/Promptito">Website</a> · <a href="https://jtg365.com">jtg365.com</a>
+  <a href="https://github.com/jacotoledo/Promptito/releases/latest">
+    <img src="https://img.shields.io/badge/Download-Windows-blue?style=flat-square&logo=windows" alt="Windows">
+  </a>
+  <a href="https://app.koyeb.com">
+    <img src="https://img.shields.io/badge/Deploy-Free%20on%20Koyeb-black?style=flat-square" alt="Koyeb">
+  </a>
+  <a href="https://github.com/jacotoledo/Promptito/blob/main/CHANGELOG.md">
+    <img src="https://img.shields.io/badge/Changelog-v2.0.0-green?style=flat-square" alt="Changelog">
+  </a>
 </p>
 
 ---
 
 > **Your AI prompts, searchable, copyable, and shareable.**
-> 
+>
 > Built by someone who got tired of scrolling through 47 Notion docs labeled `"v2_FINAL_real.md"` just to find one good prompt.
 
 ---
 
-## The Problem
+## Why Promptito?
 
-Your prompt library probably looks like this:
-
-```
-prompts/
-├── chatgpt_prompts_v3_USE_THIS_ONE.txt
-├── chatgpt_prompts_v2.txt
-├── chatgpt_prompts_v2_actual.txt
-├── chatgpt_prompts_OLD_DONT_USE.txt
-└── why_am_i_like_this.jpg
-```
-
-**Promptito is the antidote.** Simple folders, simple format, one search bar.
+| Feature | Promptito | Notion | GitHub Gists |
+|---------|:---------:|:------:|:------------:|
+| Zero dependencies | ✅ | ❌ | ❌ |
+| Self-hosted | ✅ | ❌ | ❌ |
+| No account required | ✅ | ❌ | ❌ |
+| Free forever | ✅ | 💰 | ✅ |
+| REST API included | ✅ | ❌ | ❌ |
+| Search & filter | ✅ | ✅ | ❌ |
+| Bundle download | ✅ | ❌ | ❌ |
+| Standards metadata | ✅ | ❌ | ❌ |
 
 ---
 
 ## Get Started
 
-### Option 1: Run Locally (30 seconds)
-
-1. Download from [Releases](https://github.com/jtg365/promptito/releases)
-2. Double-click `promptito.exe`
-3. Open [http://localhost](http://localhost)
-
-### Option 2: Free Website (Koyeb)
+### Option 1: Free Website (60 seconds)
 
 1. Fork this repo
 2. Go to [app.koyeb.com](https://app.koyeb.com)
@@ -56,7 +68,11 @@ prompts/
 
 Done. Your prompts are live at `https://your-app.koyeb.app`
 
-*No credit card. No server. No kidding.*
+### Option 2: Run Locally
+
+1. Download from [Releases](https://github.com/jacotoledo/Promptito/releases)
+2. Double-click `promptito.exe`
+3. Open [http://localhost](http://localhost)
 
 ---
 
@@ -65,7 +81,7 @@ Done. Your prompts are live at `https://your-app.koyeb.app`
 | Feature | What it does |
 |---------|--------------|
 | **Search** | Find prompts by name, description, or content |
-| **Filter** | By category, tags, or skill level |
+| **Filter** | By category, tags, or SFIA skill level |
 | **Copy** | One click to copy any prompt |
 | **Bundle** | Download multiple prompts as a ZIP |
 | **API** | For AI agents and scripts |
@@ -99,19 +115,37 @@ That's it. No database. No config files. Just files.
 ## API (For Developers)
 
 ```bash
-GET /api/skills         # All prompts
-GET /api/skills/{name}  # One prompt
-GET /api/search?q=text  # Search
+GET /api/skills          # All prompts
+GET /api/skills/{slug}  # One prompt
+GET /api/search?q=text   # Search
+GET /api/tags           # List tags
+GET /api/bundle         # Download as ZIP
 ```
 
 ---
 
-## Tech Stuff
+## Tech Stack
 
-- **Zero dependencies** - It's just a Go binary
+- **Go** - Zero dependencies, single binary
 - **Self-hosted** - Your data stays on your server
 - **No tracking** - No analytics, no telemetry, no cookies
-- **Standards-compliant** - Uses real AI metadata standards
+- **Standards-compliant** - IPTC, ISO/IEC 5259, NIST AI RMF, SFIA 9
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+---
+
+## Support
+
+If Promptito saves you time, consider leaving a tip:
+
+<a href="https://jtg365.com/#support">
+  <img src="https://img.shields.io/badge/Tip-JTG365-orange?style=flat-square&logo=bitcoin" alt="Tip Jar">
+</a>
 
 ---
 
@@ -122,5 +156,6 @@ MIT — see [LICENSE](LICENSE)
 ---
 
 <p align="center">
-Built with slightly too much coffee and a genuine belief that AI prompts deserve to be organized better than my desktop.
+  Built with ❤️ by <a href="https://jtg365.com">Jaco Toledo</a><br>
+  <a href="https://github.com/jacotoledo">GitHub</a> · <a href="https://jacotoledo.github.io/Promptito">Website</a> · <a href="https://jtg365.com">jtg365.com</a>
 </p>
