@@ -93,12 +93,16 @@ func (fs *FileStorage) load() error {
 		skillPath := filepath.Join(fs.dir, slug, "SKILL.md")
 
 		info, err := os.Stat(skillPath)
-		if err != nil {
+		if err != nil || info.IsDir() {
 			continue
 		}
 
 		skill, err := fs.parser.ParseFile(skillPath)
 		if err != nil {
+			continue
+		}
+
+		if skill.Name == "" || skill.Description == "" {
 			continue
 		}
 
