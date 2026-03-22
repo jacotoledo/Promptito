@@ -35,6 +35,14 @@ prompts/
 
 ---
 
+## See It In Action
+
+![Promptito UI](public/screenshots/ui.png)
+
+*Dark mode, searchable, one-click copy. What more could you want?*
+
+---
+
 ## Get Started
 
 ### Option 1: Run Locally (30 seconds)
