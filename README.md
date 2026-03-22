@@ -6,6 +6,10 @@
 </p>
 
 <p align="center">
+  <img src="public/screenshots/Screenshot.png" alt="Promptito UI" width="800">
+</p>
+
+<p align="center">
   Made with ❤️ by <a href="https://jtg365.com">Jaco Toledo</a><br>
   <a href="https://github.com/jacotoledo">GitHub</a> · <a href="https://jtg365.com">jtg365.com</a>
 </p>
@@ -32,14 +36,6 @@ prompts/
 ```
 
 **Promptito is the antidote.** Simple folders, simple format, one search bar.
-
----
-
-## See It In Action
-
-![Promptito UI](public/screenshots/ui.png)
-
-*Dark mode, searchable, one-click copy. What more could you want?*
 
 ---
 
