@@ -1,52 +1,98 @@
-# Binaries
+# ==========================================
+# Promptito .gitignore
+# Best practices for Go projects
+# ==========================================
+
+# ==== Go Build Artifacts ====
 bin/
+build/
+dist/
+vendor/
+
+# Compiled binaries
 *.exe
+*.exe~
 *.dll
 *.so
 *.dylib
 promptito
 promptito.exe
 
-# Test binary
+# Test binaries
 *.test
-
-# Output of go coverage
 *.out
-coverage.html
-coverage.out
 
-# IDE
+# Coverage reports
+coverage.out
+coverage.html
+
+# ==== IDE and Editor ====
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+.project
+.settings/
+*.sublime-*
+
+# ==== OS Files ====
 .DS_Store
-
-# OS
-Thumbs.db
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
 ehthumbs.db
+Thumbs.db
+Thumbs.db:encryptable
+Desktop.ini
 
-# Internal notes
-Memory.md
-*.notes
+# ==== Temp Files ====
+*.tmp
+*.temp
+*.log
+*.log.*
+logs/
+*.bak
 *.backup
+*.old
+*.swp
+~*
 
-# Environment
+# ==== Cache ====
+.cache/
+.cache/
+.npm/
+.eslintcache
+.parcel-cache/
+
+# ==== Environment ====
 .env
 .env.local
 .env.*.local
+.env.development
+.env.production
+*.pem
+*.key
 
-# Build artifacts
-dist/
-build/
-vendor/
+# ==== Secrets (belt and suspenders) ====
+*secret*
+*password*
+*.credentials
+credentials.json
 
-# Logs
-*.log
-logs/
+# ==== Notes (private) ====
+Memory.md
+*.notes
+NOTES.md
 
-# Temp files
-*.tmp
-*.temp
-.cache/
+# ==== Git ===
+.git/
+.gitignore should NOT be ignored
+*.gitkeep
+
+# ==== Misc ====
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
