@@ -49,7 +49,7 @@ prompts/
 
 1. Download from [Releases](https://github.com/jtg365/promptito/releases)
 2. Double-click `promptito.exe`
-3. Open [http://localhost:8080](http://localhost:8080)
+3. Open [http://localhost](http://localhost)
 
 ### Option 2: Free Website (Koyeb)
 

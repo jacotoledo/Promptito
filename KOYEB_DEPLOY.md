@@ -8,6 +8,15 @@
 
 Your app is live at `https://your-app.koyeb.app`
 
+## Custom Domain
+
+Point your domain (e.g., `prompts.yourdomain.com`) to Koyeb:
+
+1. In Koyeb, go to **Settings** → **Domains**
+2. Add your domain
+3. Add the DNS record shown (CNAME)
+4. SSL is automatic
+
 ## Keep It Awake
 
 Koyeb sleeps after 30 days. Add a free [UptimeRobot](https://uptimerobot.com) monitor to keep it running.
