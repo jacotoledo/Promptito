@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Promptito - Standards-Compliant AI Skills Repository">
+    <title>Promptito - AI Skills Repository</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+</head>
+<body>
+    <div class="app">
+        <header class="header">
+            <div class="container">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                    </svg>
+                    <span class="logo-text">Promptito</span>
+                </div>
+                <p class="tagline">Standards-Compliant AI Skills Repository</p>
+            </div>
+        </header>
+
+        <main class="main">
+            <div class="container">
+                <div class="search-section">
+                    <div class="search-box">
+                        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"/>
+                            <path d="m21 21-4.35-4.35"/>
+                        </svg>
+                        <input type="text" id="searchInput" class="search-input" placeholder="Search skills by name, description, or tag...">
+                        <kbd class="search-hint">/</kbd>
+                    </div>
+                </div>
+
+                <div class="filters">
+                    <div class="filter-group">
+                        <label>Category:</label>
+                        <select id="categoryFilter" class="filter-select">
+                            <option value="">All Categories</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>SFIA Level:</label>
+                        <select id="sfiaFilter" class="filter-select">
+                            <option value="">All Levels</option>
+                            <option value="1">Level 1 - Follow</option>
+                            <option value="2">Level 2 - Assist</option>
+                            <option value="3">Level 3 - Apply</option>
+                            <option value="4">Level 4 - Enable</option>
+                            <option value="5">Level 5 - Ensure</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Framework:</label>
+                        <select id="frameworkFilter" class="filter-select">
+                            <option value="">All Frameworks</option>
+                            <option value="risen">RISEN</option>
+                            <option value="costar">CO-STAR</option>
+                        </select>
+                    </div>
+                    <button id="clearFilters" class="btn btn-ghost">Clear Filters</button>
+                </div>
+
+                <div id="stats" class="stats">
+                    <span id="skillCount">0</span> skills found
+                </div>
+
+                <div id="skillsGrid" class="skills-grid"></div>
+
+                <div id="emptyState" class="empty-state" style="display: none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="m21 21-4.35-4.35"/>
+                    </svg>
+                    <h3>No skills found</h3>
+                    <p>Try adjusting your search or filters</p>
+                </div>
+            </div>
+        </main>
+
+        <aside id="bundleDrawer" class="bundle-drawer">
+            <div class="bundle-header">
+                <h3>Bundle Builder</h3>
+                <button id="closeBundle" class="btn btn-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div id="bundleItems" class="bundle-items"></div>
+            <div class="bundle-footer">
+                <span id="bundleCount">0 items</span>
+                <div class="bundle-actions">
+                    <button id="downloadZip" class="btn btn-primary" disabled>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download ZIP
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <button id="bundleToggle" class="bundle-toggle" style="display: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            <span id="bundleBadge" class="badge">0</span>
+        </button>
+
+        <div id="skillModal" class="modal">
+            <div class="modal-backdrop"></div>
+            <div class="modal-content">
+                <button id="closeModal" class="btn btn-icon modal-close">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+                <div id="modalBody" class="modal-body"></div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h4>API</h4>
+                        <code>GET /api/skills</code>
+                        <code>GET /api/skills/{slug}</code>
+                        <code>GET /api/search?q=</code>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Standards</h4>
+                        <span>IPTC</span>
+                        <span>ISO/IEC 5259</span>
+                        <span>NIST AI RMF</span>
+                        <span>SFIA 9</span>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Brought to you by</h4>
+                        <a href="https://jtg365.com" target="_blank" class="footer-link">Jaco Toledo @ JTG 365</a>
+                        <a href="https://github.com/jacotoledo" target="_blank" class="footer-link">GitHub</a>
+                    </div>
+                </div>
+                <p class="footer-tagline">PROMPT + RAPIDITO = super fast</p>
+            </div>
+        </footer>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
