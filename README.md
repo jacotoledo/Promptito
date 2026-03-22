@@ -143,7 +143,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 If Promptito saves you time, consider leaving a tip:
 
-<a href="https://jtg365.com/#support">
+<a href="https://jtg365.com/tip">
   <img src="https://img.shields.io/badge/Tip-JTG365-orange?style=flat-square&logo=bitcoin" alt="Tip Jar">
 </a>
 
