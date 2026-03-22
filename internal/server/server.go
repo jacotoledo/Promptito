@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/jtg365/promptito/internal/models"
@@ -20,15 +21,58 @@ const (
 	maxBodySize      = 1 << 20 // 1MB max request body
 	maxSearchResults = 100     // Max results per search
 	maxBundleSize    = 50      // Max items in bundle
+	maxSlugLength    = 100     // Max slug length
+	rateLimitWindow  = 1       // Window in seconds
+	rateLimitMaxReqs = 100     // Max requests per window
 )
 
 var validSlugRe = regexp.MustCompile(`^[a-z0-9][-a-z0-9]*$`)
 
 type Server struct {
-	mux     *http.ServeMux
-	storage storage.Storage
-	dir     string
-	static  string
+	mux       *http.ServeMux
+	storage   storage.Storage
+	dir       string
+	static    string
+	rateLimit *RateLimiter
+}
+
+type RateLimiter struct {
+	mu       sync.Mutex
+	requests map[string][]time.Time
+	limit    int
+	window   time.Duration
+}
+
+func NewRateLimiter(limit int, window time.Duration) *RateLimiter {
+	return &RateLimiter{
+		requests: make(map[string][]time.Time),
+		limit:    limit,
+		window:   window,
+	}
+}
+
+func (rl *RateLimiter) Allow(ip string) bool {
+	rl.mu.Lock()
+	defer rl.mu.Unlock()
+
+	now := time.Now()
+	windowStart := now.Add(-rl.window)
+
+	var validReqs []time.Time
+	for _, t := range rl.requests[ip] {
+		if t.After(windowStart) {
+			validReqs = append(validReqs, t)
+		}
+	}
+
+	if len(validReqs) >= rl.limit {
+		rl.requests[ip] = validReqs
+		return false
+	}
+
+	validReqs = append(validReqs, now)
+	rl.requests[ip] = validReqs
+	return true
 }
 
 type Option func(*Server)
@@ -53,7 +97,8 @@ func WithPromptDir(dir string) Option {
 
 func New(opts ...Option) (*Server, error) {
 	srv := &Server{
-		mux: http.NewServeMux(),
+		mux:       http.NewServeMux(),
+		rateLimit: NewRateLimiter(rateLimitMaxReqs, time.Duration(rateLimitWindow)*time.Second),
 	}
 
 	for _, opt := range opts {
@@ -97,11 +142,6 @@ func (s *Server) serveStatic(absDir string) http.Handler {
 			return
 		}
 
-		w.Header().Set("X-Content-Type-Options", "nosniff")
-		w.Header().Set("X-Frame-Options", "DENY")
-		w.Header().Set("X-XSS-Protection", "1; mode=block")
-		w.Header().Set("Referrer-Policy", "strict-origin-when-cross-origin")
-
 		absPath := filepath.Join(absDir, cleanPath)
 		if cleanPath == "/" || cleanPath == "" {
 			absPath = filepath.Join(absDir, "index.html")
@@ -112,7 +152,24 @@ func (s *Server) serveStatic(absDir string) http.Handler {
 }
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if !s.rateLimit.Allow(r.RemoteAddr) {
+		http.Error(w, `{"success":false,"error":"rate limit exceeded"}`, http.StatusTooManyRequests)
+		return
+	}
+
+	s.setSecurityHeaders(w)
 	s.mux.ServeHTTP(w, r)
+}
+
+func (s *Server) setSecurityHeaders(w http.ResponseWriter) {
+	w.Header().Set("X-Content-Type-Options", "nosniff")
+	w.Header().Set("X-Frame-Options", "DENY")
+	w.Header().Set("X-XSS-Protection", "1; mode=block")
+	w.Header().Set("Referrer-Policy", "strict-origin-when-cross-origin")
+	w.Header().Set("Content-Security-Policy", "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; script-src 'self'; object-src 'none'")
+	w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+	w.Header().Set("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
+	w.Header().Set("X-Permitted-Cross-Domain-Policies", "none")
 }
 
 func (s *Server) handleHealth(w http.ResponseWriter, r *http.Request) {
@@ -320,7 +377,6 @@ func (s *Server) handleIndex(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) json(w http.ResponseWriter, status int, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("X-Content-Type-Options", "nosniff")
 	w.WriteHeader(status)
 	if err := json.NewEncoder(w).Encode(data); err != nil {
 		log.Printf("json encode error")
@@ -332,7 +388,10 @@ func (s *Server) error(w http.ResponseWriter, status int, err error) {
 }
 
 func isValidSlug(slug string) bool {
-	if len(slug) == 0 || len(slug) > 100 {
+	if len(slug) == 0 || len(slug) > maxSlugLength {
+		return false
+	}
+	if slug[len(slug)-1] == '-' {
 		return false
 	}
 	return validSlugRe.MatchString(slug)

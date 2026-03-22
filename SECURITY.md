@@ -50,9 +50,10 @@ Promptito is a **read-only** server. It:
 | **Input Validation** | All slugs validated against strict regex |
 | **Path Traversal** | `..` sequences blocked, paths cleaned |
 | **DoS Protection** | Request body limited to 1MB |
-| **Rate Limiting** | Built-in limits on search results (100) and bundle size (50) |
+| **Rate Limiting** | 100 requests/second per IP |
 | **Error Sanitization** | Internal paths never exposed to clients |
-| **Security Headers** | X-Content-Type-Options, X-Frame-Options, etc. |
+| **Security Headers** | CSP, HSTS, X-Frame-Options, and more |
+| **Thread Safety** | Concurrent-safe with RWMutex |
 
 ### What Promptito Does NOT Do
 
