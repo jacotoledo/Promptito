@@ -1,0 +1,17 @@
+# Codeowners for Promptito
+
+# Security-sensitive files require review
+SECURITY.md @jacotoledo
+LICENSE @jacotoledo
+
+# Core code requires review
+cmd/ @jacotoledo
+internal/ @jacotoledo
+
+# Infrastructure
+Dockerfile @jacotoledo
+Makefile @jacotoledo
+
+# Documentation
+README.md @jacotoledo
+*.md @jacotoledo

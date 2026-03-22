@@ -68,7 +68,7 @@ Promptito is a **read-only** server. It:
 ### Recommended Security Practices
 
 1. **Run behind a reverse proxy** (nginx, Caddy) with HTTPS
-2. **Firewall the server** - only expose port 8080 to necessary networks
+2. **Firewall the server** - only expose port 80 (or 443 for HTTPS) to necessary networks
 3. **Regular updates** - pull latest releases for security patches
 4. **File permissions** - ensure prompt files are readable but not writable by the server process
 5. **Monitor logs** - watch for unusual access patterns
@@ -87,7 +87,7 @@ server {
     ssl_certificate_key /path/to/key.pem;
     
     location / {
-        proxy_pass http://localhost:8080;
+        proxy_pass http://localhost:80;
     }
 }
 ```
