@@ -397,7 +397,10 @@ function toggleBundle(open) {
 }
 
 async function downloadBundleZip() {
-    if (state.bundle.length === 0) return;
+    if (state.bundle.length === 0) {
+        showToast('No items in bundle');
+        return;
+    }
 
     showToast('Preparing bundle...');
 
@@ -408,8 +411,18 @@ async function downloadBundleZip() {
             body: JSON.stringify({ slugs: state.bundle })
         });
 
+        if (!res.ok) {
+            throw new Error('Failed to fetch bundle');
+        }
+
         const data = await res.json();
         const skills = data.data;
+
+        if (!skills || skills.length === 0) {
+            showToast('No skills found for bundle');
+            console.error('Bundle API returned empty:', data);
+            return;
+        }
 
         const manifest = {
             version: '1.0',
@@ -422,22 +435,30 @@ async function downloadBundleZip() {
             }))
         };
 
-        const content = `---
-${JSON.stringify(manifest, null, 2)}
+        const content = `# Promptito Bundle
+Generated: ${new Date().toLocaleString()}
+Total Items: ${skills.length}
+
 ---
 
-# Bundle Contents
+${skills.map(s => `# ${s.name}
 
-${skills.map(s => `## ${s.name} (${s.slug})
+**Slug:** ${s.slug}
+**Category:** ${s.category || 'N/A'}
+**Tags:** ${(s.tags || []).join(', ')}
+
+---
 
 ${s.promptTemplate}
-`).join('\n---\n')}`;
+
+---
+`).join('\n')}`;
 
         downloadFile(`promptito-bundle-${Date.now()}.md`, content, 'text/markdown');
-        showToast('Bundle downloaded');
+        showToast(`Downloaded ${skills.length} prompt${skills.length > 1 ? 's' : ''}`);
     } catch (err) {
         showToast('Failed to download bundle');
-        console.error(err);
+        console.error('Bundle download error:', err);
     }
 }
 
