@@ -64,7 +64,10 @@
 1. Fork this repo
 2. Go to [app.koyeb.com](https://app.koyeb.com)
 3. Sign up with GitHub
-4. Click **Create Service** → **Deploy from GitHub** → select your fork → **Deploy**
+4. Click **Create Service** → **Deploy from GitHub** → select your fork
+5. **IMPORTANT:** In the Builder dropdown, select **Dockerfile** (not Auto-detect)
+6. Set port to **80**
+7. Click **Deploy**
 
 Done. Your prompts are live at `https://your-app.koyeb.app`
 
