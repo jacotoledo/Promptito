@@ -61,15 +61,18 @@
 
 ### Option 1: Free Website (60 seconds)
 
-1. Fork this repo
+1. Fork this repo (use the **Fork** button, do NOT upload files manually)
 2. Go to [app.koyeb.com](https://app.koyeb.com)
 3. Sign up with GitHub
 4. Click **Create Service** → **Deploy from GitHub** → select your fork
 5. **IMPORTANT:** In the Builder dropdown, select **Dockerfile** (not Auto-detect)
-6. Set port to **80**
-7. Click **Deploy**
+6. Under **Instance**, select **CPU Eco** → **Free**
+7. Under **Exposing your service**, set port to **80**
+8. Click **Deploy**
 
 Done. Your prompts are live at `https://your-app.koyeb.app`
+
+> **Note:** If deployment fails with "directory not found", you may have uploaded files via GitHub instead of pushing with git. Delete and re-fork the repo.
 
 ### Option 2: Run Locally
 

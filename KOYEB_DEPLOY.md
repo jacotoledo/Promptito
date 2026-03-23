@@ -12,6 +12,9 @@
 1. Go to this repository on GitHub
 2. Click the **Fork** button (top right)
 3. Wait for the fork to complete
+4. **DO NOT upload files via the GitHub web interface** - always push from your local git repo
+
+> **Warning:** If you previously used "Add file" → "Upload files" on GitHub, your fork may be missing directories. To fix this, delete your fork and re-fork, then push changes using `git push origin main` from your local repo.
 
 ### Step 2: Create a New Service on Koyeb
 1. Go to [app.koyeb.com](https://app.koyeb.com) and sign in
