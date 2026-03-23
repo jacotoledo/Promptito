@@ -63,8 +63,15 @@ func WithTimeouts(read, write, idle time.Duration) Option {
 }
 
 func NewConfig(opts ...Option) *Config {
+	address := os.Getenv("PORT")
+	if address == "" {
+		address = ":8080"
+	} else {
+		address = ":" + address
+	}
+
 	cfg := &Config{
-		Address:      ":80",
+		Address:      address,
 		PromptDir:    "public/prompts",
 		StaticDir:    "public",
 		ReadTimeout:  10 * time.Second,
