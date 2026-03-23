@@ -63,22 +63,22 @@
 
 1. Fork this repo (use the **Fork** button, do NOT upload files manually)
 2. Go to [app.koyeb.com](https://app.koyeb.com)
-3. Sign up with GitHub
+3. Sign up with GitHub and connect your repo
 4. Click **Create Service** → **Deploy from GitHub** → select your fork
 5. **IMPORTANT:** In the Builder dropdown, select **Dockerfile** (not Auto-detect)
-6. Under **Instance**, select **CPU Eco** → **Free**
-7. Under **Exposing your service**, set port to **8080** and **uncheck HTTPS** (Koyeb free tier has SSL limitations with custom domains; for now use HTTP)
+6. Under **Instance**, select **CPU Eco** → **Free** → choose a region (Washington or Frankfurt)
+7. Under **Exposing your service**, set port to **8080**
 8. Click **Deploy**
 
-Done. Your prompts are live at `https://your-app.koyeb.app`
+Done. Your prompts are live at `https://your-app-name.koyeb.app`
 
-> **Note:** If deployment fails with "directory not found", you may have uploaded files via GitHub instead of pushing with git. Delete and re-fork the repo.
+> **Troubleshooting:** If buttons don't work, ensure HTTPS is enabled on your Koyeb service. If using HTTP, you may need to configure your browser to allow mixed content.
 
 ### Option 2: Run Locally
 
 1. Download from [Releases](https://github.com/jacotoledo/Promptito/releases)
 2. Double-click `promptito.exe`
-3. Open [http://localhost](http://localhost)
+3. Open [http://localhost:8080](http://localhost:8080)
 
 ---
 

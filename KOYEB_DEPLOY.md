@@ -9,12 +9,11 @@
 ## Step-by-Step Deployment
 
 ### Step 1: Fork the Repository
-1. Go to this repository on GitHub
+1. Go to [github.com/jacotoledo/Promptito](https://github.com/jacotoledo/Promptito)
 2. Click the **Fork** button (top right)
 3. Wait for the fork to complete
-4. **DO NOT upload files via the GitHub web interface** - always push from your local git repo
 
-> **Warning:** If you previously used "Add file" → "Upload files" on GitHub, your fork may be missing directories. To fix this, delete your fork and re-fork, then push changes using `git push origin main` from your local repo.
+> **Warning:** Do NOT use GitHub's "Upload files" feature. Always push changes from your local git repo. Uploading files via the web interface corrupts directory structure and breaks the build.
 
 ### Step 2: Create a New Service on Koyeb
 1. Go to [app.koyeb.com](https://app.koyeb.com) and sign in
@@ -27,25 +26,21 @@
 3. Select your forked repository from the list
 
 ### Step 4: Configure the Build (CRITICAL!)
-**This is where most people get stuck!**
+This is where most people get stuck!
 
-After selecting your repo, look for the **Builder** option:
+1. In the **Builder** dropdown, select **Dockerfile** (NOT Auto-detect or Buildpack)
+2. Koyeb will automatically find the `Dockerfile` in the repo root
+3. Leave the Dockerfile location as `./Dockerfile`
 
-1. **DO NOT leave it on "Auto-detect" or "Buildpack"**
-2. Click the dropdown and select **Dockerfile**
-3. Koyeb will automatically find your `Dockerfile` in the repo root
-4. Leave the Dockerfile location as `./Dockerfile`
+### Step 5: Configure Instance
+1. Under **Instance**, select **CPU Eco**
+2. Choose **Free** tier
+3. Select a region: **Washington, D.C.** or **Frankfurt** (free tier only)
 
-### Step 5: Configure the Port
+### Step 6: Configure Port
 1. Scroll to **Exposing your service**
-2. Set the port to: `8080` (not 80 - Koyeb free tier doesn't allow privileged ports)
-3. **Uncheck HTTPS** - Koyeb free tier has SSL limitations; use HTTP for now
-
-### Step 6: Environment Variables (Optional)
-If your app requires any secrets:
-1. Go to **Environment variables**
-2. Add any required variables
-3. Mark sensitive ones as secret
+2. Set the port to: `8080` (Koyeb free tier doesn't allow privileged ports below 1024)
+3. Keep **HTTPS enabled** for best compatibility
 
 ### Step 7: Deploy
 1. Click **Deploy**
@@ -54,24 +49,34 @@ If your app requires any secrets:
 
 ---
 
-## Troubleshooting Common Issues
+## Troubleshooting
 
-### "Build failed" or "Application error"
+### "Build failed" or "directory not found"
 - Make sure you selected **Dockerfile** as the builder (Step 4)
-- Check the build logs by clicking on the deployment in the dashboard
-- Verify the port is set to `80`
+- Check if files were uploaded via GitHub web instead of git push
+- Delete and re-fork the repo if necessary
 
-### "Health check failing"
-- The Dockerfile includes a health check on `/health`
-- Make sure your app responds to `http://localhost:80/health`
+### "Permission denied" on port 80
+- Port 80 is privileged on Linux. Always use **port 8080**.
+
+### Buttons or JavaScript not working
+- Ensure HTTPS is enabled on your Koyeb service
+- Clear browser cache after deployment
+- Check browser console for CSP errors
+
+### Health check failing
+- The app exposes a `/health` endpoint
 - Wait 30-60 seconds for the first health check
 
-### Koyeb uses Buildpack instead of Dockerfile
-This happens when you don't explicitly select Dockerfile:
-1. Go to your Service settings
-2. Find **Builder** in the configuration
-3. Change from `Auto` or `Buildpack` to **Dockerfile**
-4. Redeploy
+---
+
+## Updating Your Deployment
+
+Any push to the `main` branch will automatically trigger a new deployment.
+
+### Manual Redeploy
+1. Go to your Service on Koyeb
+2. Click **Redeploy**
 
 ---
 
@@ -95,16 +100,6 @@ Koyeb's free tier sleeps apps after 30 days of inactivity.
 3. Add a new HTTP(s) monitor
 4. Enter your Koyeb URL: `https://<your-app-name>.koyeb.app`
 5. Set check interval to 5 minutes
-
----
-
-## Updating Your Deployment
-
-Any push to the `main` branch will automatically trigger a new deployment.
-
-### Manual Redeploy
-1. Go to your Service on Koyeb
-2. Click **Redeploy**
 
 ---
 
