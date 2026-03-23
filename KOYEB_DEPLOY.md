@@ -39,6 +39,7 @@ After selecting your repo, look for the **Builder** option:
 ### Step 5: Configure the Port
 1. Scroll to **Exposing your service**
 2. Set the port to: `8080` (not 80 - Koyeb free tier doesn't allow privileged ports)
+3. **Uncheck HTTPS** - Koyeb free tier has SSL limitations; use HTTP for now
 
 ### Step 6: Environment Variables (Optional)
 If your app requires any secrets:

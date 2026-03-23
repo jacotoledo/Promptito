@@ -67,7 +67,7 @@
 4. Click **Create Service** → **Deploy from GitHub** → select your fork
 5. **IMPORTANT:** In the Builder dropdown, select **Dockerfile** (not Auto-detect)
 6. Under **Instance**, select **CPU Eco** → **Free**
-7. Under **Exposing your service**, set port to **8080** (not 80 - Koyeb free tier doesn't allow privileged ports)
+7. Under **Exposing your service**, set port to **8080** and **uncheck HTTPS** (Koyeb free tier has SSL limitations with custom domains; for now use HTTP)
 8. Click **Deploy**
 
 Done. Your prompts are live at `https://your-app.koyeb.app`
