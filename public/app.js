@@ -423,10 +423,9 @@ async function downloadBundleZip() {
             return;
         }
 
-        // Create a ZIP file using JSZip-like approach
-        const zip = new JSZip();
+        // Create files array
+        const files = [];
         
-        // Add each skill as a separate .md file
         for (const skill of skills) {
             const frontmatter = `---
 name: ${skill.name}
@@ -437,28 +436,134 @@ category: ${skill.category || ''}
 ${skill.tags && skill.tags.length ? `tags:\n${skill.tags.map(t => `  - ${t}`).join('\n')}` : ''}
 ---
 `;
-            const content = frontmatter + '\n' + (skill.promptTemplate || '');
-            zip.file(`${skill.slug}.md`, content);
+            files.push({
+                name: `${skill.slug}.md`,
+                content: frontmatter + '\n' + (skill.promptTemplate || '')
+            });
         }
 
-        // Add a manifest
-        const manifest = `# Promptito Bundle
+        // Add manifest
+        files.push({
+            name: 'README.md',
+            content: `# Promptito Bundle
 Generated: ${new Date().toLocaleString()}
 Total Items: ${skills.length}
 
 Skills in this bundle:
 ${skills.map(s => `- ${s.name} (${s.slug})`).join('\n')}
-`;
-        zip.file('README.md', manifest);
+`
+        });
 
-        // Generate and download ZIP
-        const blob = await zip.generateAsync({ type: 'blob' });
-        downloadBlob(`promptito-bundle-${Date.now()}.zip`, blob);
+        // Create ZIP
+        const zipBlob = createZip(files);
+        downloadBlob(`promptito-bundle-${Date.now()}.zip`, zipBlob);
         showToast(`Downloaded ${skills.length} prompt${skills.length > 1 ? 's' : ''} as ZIP`);
     } catch (err) {
         showToast('Failed to download bundle');
         console.error('Bundle download error:', err);
     }
+}
+
+// Simple ZIP creator without external dependencies
+function createZip(files) {
+    const parts = [];
+    const centralDirectory = [];
+    let offset = 0;
+
+    for (const file of files) {
+        const name = file.name;
+        const content = new TextEncoder().encode(file.content);
+        
+        // Local file header
+        const nameLength = new TextEncoder().encode(name).length;
+        const localHeader = new Uint8Array(30 + nameLength);
+        const view = new DataView(localHeader.buffer);
+        
+        view.setUint32(0, 0x04034b50, true); // Signature
+        view.setUint16(4, 20, true); // Version needed
+        view.setUint16(6, 0, true); // General purpose bit flag
+        view.setUint16(8, 0, true); // Compression method (stored)
+        view.setUint16(10, 0, true); // Mod time
+        view.setUint16(12, 0, true); // Mod date
+        view.setUint32(14, crc32(content), true); // CRC32
+        view.setUint32(18, content.length, true); // Compressed size
+        view.setUint32(22, content.length, true); // Uncompressed size
+        view.setUint16(26, nameLength, true); // File name length
+        view.setUint16(28, 0, true); // Extra field length
+        
+        localHeader.set(new TextEncoder().encode(name), 30);
+        
+        parts.push(localHeader);
+        parts.push(content);
+        
+        // Central directory entry
+        const centralEntry = new Uint8Array(46 + nameLength);
+        const cView = new DataView(centralEntry.buffer);
+        
+        cView.setUint32(0, 0x02014b50, true); // Signature
+        cView.setUint16(4, 20, true); // Version made by
+        cView.setUint16(6, 20, true); // Version needed
+        cView.setUint16(8, 0, true); // General purpose bit flag
+        cView.setUint16(10, 0, true); // Compression method
+        cView.setUint16(12, 0, true); // Mod time
+        cView.setUint16(14, 0, true); // Mod date
+        cView.setUint32(16, crc32(content), true); // CRC32
+        cView.setUint32(20, content.length, true); // Compressed size
+        cView.setUint32(24, content.length, true); // Uncompressed size
+        cView.setUint16(28, nameLength, true); // File name length
+        cView.setUint16(30, 0, true); // Extra field length
+        cView.setUint16(32, 0, true); // Comment length
+        cView.setUint16(34, 0, true); // Disk number start
+        cView.setUint16(36, 0, true); // Internal attrs
+        cView.setUint16(38, 0, true); // External attrs
+        cView.setUint32(42, offset, true); // Relative offset
+        
+        centralEntry.set(new TextEncoder().encode(name), 46);
+        
+        centralDirectory.push(centralEntry);
+        offset += localHeader.length + content.length;
+    }
+
+    const centralOffset = offset;
+    let cdSize = 0;
+    for (const entry of centralDirectory) {
+        parts.push(entry);
+        cdSize += entry.length;
+    }
+
+    // End of central directory
+    const eocd = new Uint8Array(22);
+    const eocdView = new DataView(eocd.buffer);
+    eocdView.setUint32(0, 0x06054b50, true); // Signature
+    eocdView.setUint16(4, 0, true); // Disk number
+    eocdView.setUint16(6, 0, true); // CD disk number
+    eocdView.setUint16(8, files.length, true); // Entries on disk
+    eocdView.setUint16(10, files.length, true); // Total entries
+    eocdView.setUint32(12, cdSize, true); // CD size
+    eocdView.setUint32(16, centralOffset, true); // CD offset
+    eocdView.setUint16(20, 0, true); // Comment length
+    
+    parts.push(eocd);
+
+    return new Blob(parts, { type: 'application/zip' });
+}
+
+// CRC32 table
+const crcTable = new Uint32Array(256);
+for (let i = 0; i < 256; i++) {
+    let c = i;
+    for (let j = 0; j < 8; j++) {
+        c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+    }
+    crcTable[i] = c;
+}
+
+function crc32(buffer) {
+    let crc = 0xFFFFFFFF;
+    for (let i = 0; i < buffer.length; i++) {
+        crc = crcTable[(crc ^ buffer[i]) & 0xFF] ^ (crc >>> 8);
+    }
+    return (crc ^ 0xFFFFFFFF) >>> 0;
 }
 
 function downloadFile(filename, content, type) {
