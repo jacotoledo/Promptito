@@ -96,6 +96,8 @@ Done. Your prompts are live at `https://your-app-name.koyeb.app`
 
 ## Add Your Own Prompts
 
+Promptito comes with **10 built-in prompts** ready to use. You can add your own anytime:
+
 1. Create a folder: `public/prompts/my-prompt/`
 2. Add a file: `public/prompts/my-prompt/SKILL.md`
 
@@ -103,6 +105,7 @@ Done. Your prompts are live at `https://your-app-name.koyeb.app`
 ---
 name: My Prompt
 description: What it does
+version: 1.0.0
 ---
 
 # Role
@@ -112,7 +115,9 @@ You are a helpful AI that...
 Do this and that...
 ```
 
-3. Refresh the page.
+**For local development:** Just create the folder, then start the server. New prompts appear automatically.
+
+**For Koyeb:** Push changes to GitHub. Koyeb redeploys automatically, or click Redeploy.
 
 That's it. No database. No config files. Just files.
 
