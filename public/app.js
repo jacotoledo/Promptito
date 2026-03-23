@@ -402,7 +402,7 @@ async function downloadBundleZip() {
         return;
     }
 
-    showToast('Preparing bundle...');
+    showToast('Preparing ZIP...');
 
     try {
         const res = await fetch(`${API_BASE}/bundle`, {
@@ -420,42 +420,41 @@ async function downloadBundleZip() {
 
         if (!skills || skills.length === 0) {
             showToast('No skills found for bundle');
-            console.error('Bundle API returned empty:', data);
             return;
         }
 
-        const manifest = {
-            version: '1.0',
-            createdAt: new Date().toISOString(),
-            count: skills.length,
-            skills: skills.map(s => ({
-                slug: s.slug,
-                name: s.name,
-                version: s.version
-            }))
-        };
+        // Create a ZIP file using JSZip-like approach
+        const zip = new JSZip();
+        
+        // Add each skill as a separate .md file
+        for (const skill of skills) {
+            const frontmatter = `---
+name: ${skill.name}
+slug: ${skill.slug}
+version: ${skill.version || '1.0.0'}
+description: ${skill.description || ''}
+category: ${skill.category || ''}
+${skill.tags && skill.tags.length ? `tags:\n${skill.tags.map(t => `  - ${t}`).join('\n')}` : ''}
+---
+`;
+            const content = frontmatter + '\n' + (skill.promptTemplate || '');
+            zip.file(`${skill.slug}.md`, content);
+        }
 
-        const content = `# Promptito Bundle
+        // Add a manifest
+        const manifest = `# Promptito Bundle
 Generated: ${new Date().toLocaleString()}
 Total Items: ${skills.length}
 
----
+Skills in this bundle:
+${skills.map(s => `- ${s.name} (${s.slug})`).join('\n')}
+`;
+        zip.file('README.md', manifest);
 
-${skills.map(s => `# ${s.name}
-
-**Slug:** ${s.slug}
-**Category:** ${s.category || 'N/A'}
-**Tags:** ${(s.tags || []).join(', ')}
-
----
-
-${s.promptTemplate}
-
----
-`).join('\n')}`;
-
-        downloadFile(`promptito-bundle-${Date.now()}.md`, content, 'text/markdown');
-        showToast(`Downloaded ${skills.length} prompt${skills.length > 1 ? 's' : ''}`);
+        // Generate and download ZIP
+        const blob = await zip.generateAsync({ type: 'blob' });
+        downloadBlob(`promptito-bundle-${Date.now()}.zip`, blob);
+        showToast(`Downloaded ${skills.length} prompt${skills.length > 1 ? 's' : ''} as ZIP`);
     } catch (err) {
         showToast('Failed to download bundle');
         console.error('Bundle download error:', err);
@@ -464,6 +463,17 @@ ${s.promptTemplate}
 
 function downloadFile(filename, content, type) {
     const blob = new Blob([content], { type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+function downloadBlob(filename, blob) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
